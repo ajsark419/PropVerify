@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-shield-lock"></i> Admin Dashboard</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary"><div class="card-body">
+            <div class="small">Users</div>
+            <div class="h2 mb-0">{{ stats.users }}</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info"><div class="card-body">
+            <div class="small">Properties</div>
+            <div class="h2 mb-0">{{ stats.properties }}</div>
+        </div></div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-bg-warning"><div class="card-body">
+            <div class="small">Pending IDs</div>
+            <div class="h2 mb-0">{{ stats.pending_identity }}</div>
+        </div></div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-bg-warning"><div class="card-body">
+            <div class="small">Pending Ownership</div>
+            <div class="h2 mb-0">{{ stats.pending_property }}</div>
+        </div></div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-bg-warning"><div class="card-body">
+            <div class="small">Pending Listings</div>
+            <div class="h2 mb-0">{{ stats.pending_listings }}</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <a href="{{ url_for('admin.users') }}" class="card text-decoration-none h-100">
+            <div class="card-body"><i class="bi bi-people"></i> Manage Users</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('admin.identity_queue') }}" class="card text-decoration-none h-100">
+            <div class="card-body"><i class="bi bi-person-badge"></i> Identity Verifications</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('admin.property_queue') }}" class="card text-decoration-none h-100">
+            <div class="card-body"><i class="bi bi-file-earmark-check"></i> Ownership Verifications</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('admin.listings_queue') }}" class="card text-decoration-none h-100">
+            <div class="card-body"><i class="bi bi-list-check"></i> Listings Approval</div>
+        </a>
+    </div>
+</div>
+{% endblock %}

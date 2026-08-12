@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Property Verifications{% endblock %}
+{% block content %}
+<h2 class="mb-3">Property Ownership Verifications</h2>
+
+{% if verifications %}
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead><tr><th>Property</th><th>Owner</th><th>Submitted</th><th>Status</th><th>Document</th><th>Decision</th></tr></thead>
+    <tbody>
+    {% for v in verifications %}
+    <tr>
+        <td>
+            {% if v.property %}
+                <a href="{{ url_for('properties.detail', property_id=v.property.id) }}">{{ v.property.title }}</a>
+            {% else %}<em>(deleted)</em>{% endif %}
+        </td>
+        <td>{{ v.user.username }}</td>
+        <td>{{ v.created_at|date }}</td>
+        <td>{{ v.status|status_badge }}</td>
+        <td>
+            <a class="btn btn-sm btn-outline-secondary" target="_blank"
+               href="{{ url_for('uploads.ownership_document', filename=v.document_filename.split('/', 1)[1]) }}">View</a>
+        </td>
+        <td>
+            {% if v.status == 'pending' %}
+            <form method="post" action="{{ url_for('admin.decide_verification', verification_id=v.id) }}" class="d-flex gap-2">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="note" class="form-control form-control-sm" placeholder="Note">
+                <button name="decision" value="approved" class="btn btn-sm btn-success">Approve</button>
+                <button name="decision" value="rejected" class="btn btn-sm btn-danger">Reject</button>
+            </form>
+            {% else %}
+            <span class="text-muted small">Reviewed {{ v.reviewed_at|date }}</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No property verification submissions.</p>
+{% endif %}
+{% endblock %}

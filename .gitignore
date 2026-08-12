@@ -1,0 +1,78 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.pythonlibs/
+
+# ---- Flask ----
+instance/
+.webassets-cache/
+*.db
+*.sqlite
+*.sqlite3
+
+# Migrations folder is committed; the local SQLite db file is not.
+# (If you want to keep it, remove `*.db` above.)
+
+# ---- Environment ----
+.env
+.env.*
+!.env.example
+
+# ---- Uploads (user-generated content) ----
+uploads/*
+!uploads/.gitkeep
+
+# ---- Editors / IDEs ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Replit / pnpm scaffolding (only present in the source workspace) ----
+.replit
+.replitignore
+.cache/
+.local/
+.upm/
+.agents/
+node_modules/
+pnpm-lock.yaml
+pnpm-workspace.yaml
+package.json
+tsconfig.json
+tsconfig.base.json
+uv.lock
+artifacts/
+lib/
+scripts/
+main.py

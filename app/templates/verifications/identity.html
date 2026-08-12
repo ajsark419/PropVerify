@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Identity Verification{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <h2>Identity Verification</h2>
+        <p class="text-muted">Upload a government-issued ID. An admin will review and approve your identity.</p>
+
+        {% if current_user.identity_verified %}
+            <div class="alert alert-success"><i class="bi bi-patch-check-fill"></i> Your identity is verified.</div>
+        {% endif %}
+
+        {% if latest %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted">Latest submission</h6>
+                <p class="mb-1">Submitted: {{ latest.created_at|date }}</p>
+                <p class="mb-1">Status: {{ latest.status|status_badge }}</p>
+                {% if latest.admin_note %}<p class="mb-0"><em>Admin note: {{ latest.admin_note }}</em></p>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="card card-body shadow-sm">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.document.label(class="form-label") }}
+                {{ form.document(class="form-control") }}
+                {% for e in form.document.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

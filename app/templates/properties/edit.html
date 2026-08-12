@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if property else "New" }} Listing{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>{{ "Edit" if property else "New" }} Listing</h2>
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+                {% for e in form.title.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows=5) }}
+                {% for e in form.description.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form.price.label(class="form-label") }}
+                    {{ form.price(class="form-control") }}
+                    {% for e in form.price.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.location.label(class="form-label") }}
+                    {{ form.location(class="form-control") }}
+                    {% for e in form.location.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.property_type.label(class="form-label") }}
+                    {{ form.property_type(class="form-select") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.images.label(class="form-label") }}
+                {{ form.images(class="form-control") }}
+                <small class="text-muted">You can select multiple images.</small>
+                {% for e in form.images.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+
+            {% if property and property.images %}
+            <div class="mb-3">
+                <label class="form-label">Existing images</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% for img in property.images %}
+                        <img src="{{ url_for('uploads.property_image', filename=img.filename.split('/', 1)[1]) }}"
+                             style="width:120px;height:90px;object-fit:cover;border-radius:6px;">
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('properties.mine') }}" class="btn btn-outline-secondary">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

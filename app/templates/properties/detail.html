@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            {% if property.images %}
+            <div id="propCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for img in property.images %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('uploads.property_image', filename=img.filename.split('/', 1)[1]) }}"
+                             class="d-block w-100 detail-img" alt="{{ property.title }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if property.images|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#propCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="bg-light text-center text-muted py-5">
+                <i class="bi bi-house" style="font-size:5rem;"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="mb-1">{{ property.title }}</h2>
+                        <p class="text-muted mb-2"><i class="bi bi-geo-alt"></i> {{ property.location }} &middot; {{ property.property_type|title }}</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="h3 text-primary">{{ property.price|currency }}</div>
+                        {% if property.is_fully_verified %}
+                            <span class="badge bg-success"><i class="bi bi-patch-check-fill"></i> Verified Listing</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Unverified</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+                <p class="text-secondary" style="white-space: pre-wrap;">{{ property.description }}</p>
+
+                {% if is_owner_or_admin %}
+                <div class="alert alert-info mt-3">
+                    <strong>Listing status:</strong> {{ property.listing_status|status_badge }}<br>
+                    <strong>Property verification:</strong> {{ property.property_verification_status|status_badge }}<br>
+                    <strong>Owner identity:</strong>
+                    {% if property.owner.identity_verified %}
+                        <span class="badge bg-success">Verified</span>
+                    {% else %}
+                        <span class="badge bg-warning">Not verified</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Listed by</h5>
+                <p class="mb-1"><i class="bi bi-person-circle"></i> {{ property.owner.username }}</p>
+                {% if property.owner.identity_verified %}
+                    <span class="badge bg-success"><i class="bi bi-patch-check-fill"></i> Identity Verified</span>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if message_form %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Send an inquiry</h5>
+                <form method="post" action="{{ url_for('messages.inquire', property_id=property.id) }}">
+                    {{ message_form.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ message_form.subject.label(class="form-label small") }}
+                        {{ message_form.subject(class="form-control form-control-sm", value="Inquiry about " + property.title) }}
+                    </div>
+                    <div class="mb-2">
+                        {{ message_form.body.label(class="form-label small") }}
+                        {{ message_form.body(class="form-control form-control-sm", rows=4) }}
+                    </div>
+                    {{ message_form.submit(class="btn btn-primary btn-sm w-100") }}
+                </form>
+            </div>
+        </div>
+        {% elif not current_user.is_authenticated %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <p class="mb-2">Sign in to contact the owner</p>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Sign in</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

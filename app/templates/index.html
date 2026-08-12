@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Browse Properties{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <h2 class="mb-0">Browse Properties</h2>
+        <p class="text-muted">Find verified listings from trusted owners.</p>
+    </div>
+    <div class="col-md-8">
+        <form method="get" class="card card-body shadow-sm">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="location" class="form-control" placeholder="Location"
+                           value="{{ request.args.get('location', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <select name="property_type" class="form-select">
+                        <option value="">Any type</option>
+                        <option value="apartment" {% if request.args.get('property_type') == 'apartment' %}selected{% endif %}>Apartment</option>
+                        <option value="house" {% if request.args.get('property_type') == 'house' %}selected{% endif %}>House</option>
+                        <option value="condo" {% if request.args.get('property_type') == 'condo' %}selected{% endif %}>Condo</option>
+                        <option value="townhouse" {% if request.args.get('property_type') == 'townhouse' %}selected{% endif %}>Townhouse</option>
+                        <option value="land" {% if request.args.get('property_type') == 'land' %}selected{% endif %}>Land</option>
+                        <option value="commercial" {% if request.args.get('property_type') == 'commercial' %}selected{% endif %}>Commercial</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="min_price" class="form-control" placeholder="Min $"
+                           value="{{ request.args.get('min_price', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="max_price" class="form-control" placeholder="Max $"
+                           value="{{ request.args.get('max_price', '') }}">
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </div>
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="verifiedOnly" name="verified_only" value="y"
+                       {% if verified_only %}checked{% endif %}>
+                <label class="form-check-label" for="verifiedOnly">Show verified listings only</label>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if properties %}
+<div class="row g-4">
+    {% for p in properties %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm property-card">
+            {% set img = p.primary_image() %}
+            {% if img %}
+                <img src="{{ url_for('uploads.property_image', filename=img.filename.split('/', 1)[1]) }}"
+                     class="card-img-top property-thumb" alt="{{ p.title }}">
+            {% else %}
+                <div class="property-thumb bg-light d-flex align-items-center justify-content-center text-muted">
+                    <i class="bi bi-house" style="font-size:3rem;"></i>
+                </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0">{{ p.title }}</h5>
+                    {% if p.is_fully_verified %}
+                        <span class="badge bg-success"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-geo-alt"></i> {{ p.location }} &middot; {{ p.property_type|title }}
+                </p>
+                <p class="card-text text-truncate-2">{{ p.description }}</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="h5 text-primary mb-0">{{ p.price|currency }}</span>
+                    <a href="{{ url_for('properties.detail', property_id=p.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-search" style="font-size:3rem;"></i>
+    <p class="mt-3">No listings match your filters.</p>
+</div>
+{% endif %}
+{% endblock %}
