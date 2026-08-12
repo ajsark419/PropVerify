@@ -55,4 +55,9 @@ def create_app(config_class=Config):
     from app.template_helpers import register_template_helpers
     register_template_helpers(app)
 
+    with app.app_context():
+        db.create_all()
+        from app.seed import seed_default_admin
+        seed_default_admin()
+
     return app
